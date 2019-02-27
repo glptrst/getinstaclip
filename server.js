@@ -2,6 +2,7 @@
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const instaclip = require('./instaclip.js');
 
 const port = process.env.PORT || 3000;
 
@@ -34,19 +35,17 @@ const server = http.createServer((req, res) => {
 	    });
 	} else {
 	    var splittedUrl = req.url.split('/');
-	    if (splittedUrl[1] === 'getpic') {
+	    if (splittedUrl[1] === 'getinstaclip') {
 		// Check user input
-		if (instapic.isInputLegal(instapic.getUserInput(req.url))) {
+		if (instaclip.isInputLegal(instaclip.getUserInput(req.url))) {
 		    // get promise to html of the page
-		    let pagePromise = instapic.getPage(instapic.getUserInput(req.url));
+		    let pagePromise = instaclip.getPage(instaclip.getUserInput(req.url));
 		    pagePromise.
 			then((page) => {
-
-			    //TODO
 			    //get video url
-			    let video;
+			    let video = instaclip.getVideoUrl(page);
 
-			    // redirect to picture
+			    // redirect to video
 			    res.statusCode = 302;
 			    res.setHeader('Location', video);
 			    res.end();
@@ -59,12 +58,12 @@ const server = http.createServer((req, res) => {
 		}
 	    } else {
 		res.statusCode = 404;
-		res.end('error');
+		res.end('error 3');
 	    }
 	}
     } else {
 	res.statusCode = 404;
-	res.end('error');
+	res.end('error 4');
     }
 });
 
